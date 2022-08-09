@@ -5,8 +5,11 @@ import {
   ContactItem,
   ContactRemoveBtn,
 } from './ContactsList.styled';
+import { deleteContact } from 'components/redux/contacktsSlice';
+import { useDispatch } from 'react-redux/es/exports';
 
-const ContactsList = ({ contacts, handleDelete }) => {
+const ContactsList = ({ contacts }) => {
+  const dispatch = useDispatch();
   return (
     <ul>
       {contacts.map(({ name, id, number }) => {
@@ -15,7 +18,10 @@ const ContactsList = ({ contacts, handleDelete }) => {
             <ContactInfo>
               {name}: {number}
             </ContactInfo>
-            <ContactRemoveBtn type="button" onClick={() => handleDelete(id)}>
+            <ContactRemoveBtn
+              type="button"
+              onClick={() => dispatch(deleteContact(id))}
+            >
               X
             </ContactRemoveBtn>
           </ContactItem>
