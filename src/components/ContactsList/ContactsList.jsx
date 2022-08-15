@@ -1,14 +1,14 @@
 import {
   ContactInfo,
   ContactItem,
-  ContactRemoveBtn,
+  // ContactRemoveBtn,
 } from './ContactsList.styled';
-import {
-  deleteContact,
-  selectContact,
-  selectFilter,
-} from 'redux/contactsSlice';
-import { useDispatch } from 'react-redux';
+// import {
+//   deleteContact,
+//   selectContact,
+//   selectFilter,
+// } from 'redux/contactsSlice';
+// import { useDispatch } from 'react-redux';
 import { useGetContactsQuery } from 'redux/contactsApi';
 
 const ContactsList = () => {
