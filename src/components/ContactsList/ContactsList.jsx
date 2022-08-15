@@ -8,31 +8,36 @@ import {
   selectContact,
   selectFilter,
 } from 'redux/contactsSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useGetContactsQuery } from 'redux/contactsApi';
 
 const ContactsList = () => {
-  const filter = useSelector(selectFilter);
-  const contacts = useSelector(selectContact);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const filteredItems = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  const { data, error, isLoading } = useGetContactsQuery();
+
+  console.log(data);
+  console.log(error);
+  console.log(isLoading);
+
+  // const filteredItems = contacts.filter(contact =>
+  //   contact.name.toLowerCase().includes(filter.toLowerCase())
+  // );
 
   return (
     <ul>
-      {filteredItems.map(({ name, id, number }) => {
+      {data.map(({ name, id, phone }) => {
         return (
           <ContactItem key={id}>
             <ContactInfo>
-              {name}: {number}
+              {name}: {phone}
             </ContactInfo>
-            <ContactRemoveBtn
+            {/* <ContactRemoveBtn
               type="button"
               onClick={() => dispatch(deleteContact(id))}
             >
               X
-            </ContactRemoveBtn>
+            </ContactRemoveBtn> */}
           </ContactItem>
         );
       })}
