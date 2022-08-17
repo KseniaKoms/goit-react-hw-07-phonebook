@@ -1,7 +1,7 @@
 import {
   ContactInfo,
   ContactItem,
-  // ContactRemoveBtn,
+  ContactRemoveBtn,
 } from './ContactsList.styled';
 // import {
 //   deleteContact,
@@ -9,16 +9,20 @@ import {
 //   selectFilter,
 // } from 'redux/contactsSlice';
 // import { useDispatch } from 'react-redux';
-import { useGetContactsQuery } from 'redux/contactsApi';
+import {
+  useGetContactsQuery,
+  useRemoveContactMutation,
+} from 'redux/contactsApi';
 
 const ContactsList = () => {
   // const dispatch = useDispatch();
 
-  const { data, error, isLoading } = useGetContactsQuery();
+  const { data, error, isFetching } = useGetContactsQuery();
+  const [removeContact, { isLoading: isRemoving }] = useRemoveContactMutation();
 
   console.log(data);
   console.log(error);
-  console.log(isLoading);
+  console.log(isFetching);
 
   // const filteredItems = contacts.filter(contact =>
   //   contact.name.toLowerCase().includes(filter.toLowerCase())
@@ -26,21 +30,20 @@ const ContactsList = () => {
 
   return (
     <ul>
-      {data.map(({ name, id, phone }) => {
-        return (
-          <ContactItem key={id}>
-            <ContactInfo>
-              {name}: {phone}
-            </ContactInfo>
-            {/* <ContactRemoveBtn
-              type="button"
-              onClick={() => dispatch(deleteContact(id))}
-            >
-              X
-            </ContactRemoveBtn> */}
-          </ContactItem>
-        );
-      })}
+      {isFetching && <p>Is loading...</p>}
+      {data &&
+        data.map(({ name, id, phone }) => {
+          return (
+            <ContactItem key={id}>
+              <ContactInfo>
+                {name}: {phone}
+              </ContactInfo>
+              <ContactRemoveBtn type="button" onClick={() => removeContact(id)}>
+                {isRemoving && <p>deleting...</p>} X
+              </ContactRemoveBtn>
+            </ContactItem>
+          );
+        })}
     </ul>
   );
 };
