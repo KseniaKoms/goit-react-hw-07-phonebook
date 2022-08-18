@@ -1,12 +1,10 @@
-import { nanoid } from 'nanoid';
 import { Notify } from 'notiflix';
 import { FormInput, FormSubmitBtn, FormLabel } from './ContactForm.styled';
-import { selectContact, addContact } from '../../redux/contactsSlice';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAddContactMutation, useGetContactsQuery } from 'redux/contactsApi';
 
 const ContactForm = () => {
-  const contacts = useSelector(selectContact);
-  const dispatch = useDispatch();
+  const { data: contacts } = useGetContactsQuery();
+  const [addContact, { isLoading: adding }] = useAddContactMutation();
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -14,22 +12,12 @@ const ContactForm = () => {
     const name = form.elements.name.value;
     const number = form.elements.number.value;
 
-    if (
-      contacts.some(
-        contact => contact.name.toLowerCase() === name.toLowerCase()
-      )
-    ) {
+    if (contacts.some(item => item.name.toLowerCase() === name.toLowerCase())) {
       Notify.warning(`${name} is already in contacts!`);
     } else {
-      dispatch(
-        addContact({
-          id: nanoid(),
-          name,
-          number,
-        })
-      );
-      form.reset();
+      addContact(name, number);
     }
+    form.reset();
   };
 
   return (
@@ -54,7 +42,9 @@ const ContactForm = () => {
         required
       />
 
-      <FormSubmitBtn type="submit">+ add contact</FormSubmitBtn>
+      <FormSubmitBtn type="submit">
+        {adding ? <p>adding...</p> : <p>+ add contact</p>}
+      </FormSubmitBtn>
     </form>
   );
 };

@@ -3,34 +3,28 @@ import {
   ContactItem,
   ContactRemoveBtn,
 } from './ContactsList.styled';
-// import {
-//   deleteContact,
-//   selectContact,
-//   selectFilter,
-// } from 'redux/contactsSlice';
-// import { useDispatch } from 'react-redux';
+import { selectFilter } from 'redux/filterSlice';
 import {
   useGetContactsQuery,
   useRemoveContactMutation,
 } from 'redux/contactsApi';
+import { useSelector } from 'react-redux';
+import { Spinner } from 'components/Spinner/Spinner';
 
 const ContactsList = () => {
-  // const dispatch = useDispatch();
-
-  const { data, error, isFetching } = useGetContactsQuery();
+  const { data, isFetching } = useGetContactsQuery();
   const [removeContact, { isLoading: isRemoving }] = useRemoveContactMutation();
+  const filter = useSelector(selectFilter);
 
   console.log(data);
-  console.log(error);
-  console.log(isFetching);
 
-  // const filteredItems = contacts.filter(contact =>
+  // const filtered = data.filter(contact =>
   //   contact.name.toLowerCase().includes(filter.toLowerCase())
   // );
 
   return (
     <ul>
-      {isFetching && <p>Is loading...</p>}
+      {isFetching && <Spinner />}
       {data &&
         data.map(({ name, id, phone }) => {
           return (
@@ -39,7 +33,7 @@ const ContactsList = () => {
                 {name}: {phone}
               </ContactInfo>
               <ContactRemoveBtn type="button" onClick={() => removeContact(id)}>
-                {isRemoving && <p>deleting...</p>} X
+                {isRemoving && <Spinner />} X
               </ContactRemoveBtn>
             </ContactItem>
           );
