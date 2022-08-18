@@ -3,18 +3,18 @@ import {
   ContactItem,
   ContactRemoveBtn,
 } from './ContactsList.styled';
-import { selectFilter } from 'redux/filterSlice';
+// import { selectFilter } from 'redux/filterSlice';
 import {
   useGetContactsQuery,
   useRemoveContactMutation,
 } from 'redux/contactsApi';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { Spinner } from 'components/Spinner/Spinner';
 
 const ContactsList = () => {
   const { data, isFetching } = useGetContactsQuery();
   const [removeContact, { isLoading: isRemoving }] = useRemoveContactMutation();
-  const filter = useSelector(selectFilter);
+  // const filter = useSelector(selectFilter);
 
   console.log(data);
 
