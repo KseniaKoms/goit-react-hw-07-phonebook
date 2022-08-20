@@ -4,9 +4,10 @@ import { useAddContactMutation, useGetContactsQuery } from 'redux/contactsApi';
 
 const ContactForm = () => {
   const { data: contacts } = useGetContactsQuery();
-  const [addContact, { isLoading: adding }] = useAddContactMutation();
+  const [addContact, { isLoading: adding, isSuccess }] =
+    useAddContactMutation();
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     const form = e.target;
     const name = form.elements.name.value;
@@ -14,12 +15,18 @@ const ContactForm = () => {
 
     if (contacts.some(item => item.name.toLowerCase() === name.toLowerCase())) {
       Notify.warning(`${name} is already in contacts!`);
-    } else {
-      addContact(name, number);
+      return;
     }
-    form.reset();
+    try {
+      await addContact(name, number);
+      if (isSuccess) {
+        Notify.success('Contact added');
+      }
+      form.reset();
+    } catch (error) {
+      Notify.failure('Something bad happened');
+    }
   };
-
   return (
     <form onSubmit={handleSubmit}>
       <FormLabel htmlFor="name">Name:</FormLabel>
@@ -48,5 +55,4 @@ const ContactForm = () => {
     </form>
   );
 };
-
 export default ContactForm;

@@ -1,43 +1,23 @@
-import {
-  ContactInfo,
-  ContactItem,
-  ContactRemoveBtn,
-} from './ContactsList.styled';
-import { selectFilter } from 'redux/filterSlice';
-import {
-  useGetContactsQuery,
-  useRemoveContactMutation,
-} from 'redux/contactsApi';
+import { useGetContactsQuery } from 'redux/contactsApi';
+import { ContactItem } from 'components/ContactItem/ContactItem';
 import { useSelector } from 'react-redux';
+import { selectFilter } from 'redux/filterSlice';
 import { Spinner } from 'components/Spinner/Spinner';
 
 const ContactsList = () => {
-  const { data, isFetching } = useGetContactsQuery();
-  const [removeContact, { isLoading: isRemoving }] = useRemoveContactMutation();
+  const { data, isLoading } = useGetContactsQuery();
   const filter = useSelector(selectFilter);
 
   return (
     <ul>
-      {isFetching && <Spinner />}
+      {isLoading && <Spinner />}
       {data &&
         data
           .filter(contact =>
             contact.name.toLowerCase().includes(filter.toLowerCase())
           )
           .map(({ name, id, phone }) => {
-            return (
-              <ContactItem key={id}>
-                <ContactInfo>
-                  {name}: {phone}
-                </ContactInfo>
-                <ContactRemoveBtn
-                  type="button"
-                  onClick={() => removeContact(id)}
-                >
-                  {isRemoving && <Spinner />} X
-                </ContactRemoveBtn>
-              </ContactItem>
-            );
+            return <ContactItem key={id} name={name} number={phone} id={id} />;
           })}
     </ul>
   );

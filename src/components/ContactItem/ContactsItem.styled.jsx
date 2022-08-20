@@ -4,7 +4,7 @@ export const ContactInfo = styled.p`
   color: #fff;
 `;
 
-export const ContactItem = styled.li`
+export const ContactItems = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
