@@ -1,15 +1,24 @@
 import { Notify } from 'notiflix';
 import { FormInput, FormSubmitBtn, FormLabel } from './ContactForm.styled';
 import { useAddContactMutation, useGetContactsQuery } from 'redux/contactsApi';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const ContactForm = () => {
   const { data } = useGetContactsQuery();
-  const [addContact, { isLoading: adding }] = useAddContactMutation();
+  const [addContact, { isLoading: adding, isSuccess }] =
+    useAddContactMutation();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
 
-  const handleSubmit = async e => {
+  useEffect(() => {
+    if (isSuccess) {
+      Notify.success('Contact is setting to your phonebook');
+      setName('');
+      setPhone('');
+    }
+  }, [isSuccess]);
+
+  const handleSubmit = e => {
     e.preventDefault();
 
     if (data.some(item => item.name.toLowerCase() === name.toLowerCase())) {
@@ -18,12 +27,6 @@ const ContactForm = () => {
     }
 
     addContact({ name, phone });
-    // if (isSuccess) {
-    //   Notify.success('Contact is setting to your phonebook');
-    // }
-
-    setName('');
-    setPhone('');
   };
 
   const handleChange = e => {
