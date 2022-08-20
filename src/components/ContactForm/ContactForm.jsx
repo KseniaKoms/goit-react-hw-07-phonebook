@@ -1,36 +1,50 @@
 import { Notify } from 'notiflix';
 import { FormInput, FormSubmitBtn, FormLabel } from './ContactForm.styled';
 import { useAddContactMutation, useGetContactsQuery } from 'redux/contactsApi';
+import { useState } from 'react';
 
 const ContactForm = () => {
-  const { data: contacts } = useGetContactsQuery();
-  const [addContact, { isLoading: adding, isSuccess }] =
-    useAddContactMutation();
+  const { data } = useGetContactsQuery();
+  const [addContact, { isLoading: adding }] = useAddContactMutation();
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const form = e.target;
-    const name = form.elements.name.value;
-    const number = form.elements.number.value;
 
-    if (contacts.some(item => item.name.toLowerCase() === name.toLowerCase())) {
+    if (data.some(item => item.name.toLowerCase() === name.toLowerCase())) {
       Notify.warning(`${name} is already in contacts!`);
       return;
     }
-    try {
-      await addContact(name, number);
-      if (isSuccess) {
-        Notify.success('Contact added');
-      }
-      form.reset();
-    } catch (error) {
-      Notify.failure('Something bad happened');
+
+    addContact({ name, phone });
+    // if (isSuccess) {
+    //   Notify.success('Contact is setting to your phonebook');
+    // }
+
+    setName('');
+    setPhone('');
+  };
+
+  const handleChange = e => {
+    switch (e.target.name) {
+      case 'name':
+        setName(e.target.value);
+        break;
+      case 'number':
+        setPhone(e.target.value);
+        break;
+      default:
+        return;
     }
   };
+
   return (
     <form onSubmit={handleSubmit}>
       <FormLabel htmlFor="name">Name:</FormLabel>
       <FormInput
+        onChange={handleChange}
+        value={name}
         type="text"
         name="name"
         pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -41,6 +55,8 @@ const ContactForm = () => {
 
       <FormLabel htmlFor="number">Tel:</FormLabel>
       <FormInput
+        onChange={handleChange}
+        value={phone}
         type="tel"
         name="number"
         autoComplete="off"

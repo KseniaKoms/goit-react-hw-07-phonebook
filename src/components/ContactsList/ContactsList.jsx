@@ -7,7 +7,6 @@ import { Spinner } from 'components/Spinner/Spinner';
 const ContactsList = () => {
   const { data, isLoading } = useGetContactsQuery();
   const filter = useSelector(selectFilter);
-
   return (
     <ul>
       {isLoading && <Spinner />}
